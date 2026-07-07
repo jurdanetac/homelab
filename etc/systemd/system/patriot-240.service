@@ -1,0 +1,17 @@
+[Unit]
+Description=Late Unlock and Mount of Patriot Burst Elite 240GB HDD
+After=local-fs.target
+Requires=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/sleep 2
+ExecStartPre=/usr/bin/mkdir -p /mnt/patriot-240
+ExecStart=/sbin/cryptsetup open UUID=TODO patriot-240-mapper --key-file=/etc/cryptsetup-keys.d/patriot-240.keyfile
+ExecStartPost=/usr/bin/mount /dev/mapper/patriot-240-mapper /mnt/patriot-240
+ExecStop=/usr/bin/umount /mnt/patriot-240-mapper
+ExecStopPost=/sbin/cryptsetup close patriot-240-mapper
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+[Unit]
+Description=mergerfs service
+After=toshiba-500.service seagate-320 toshiba-320
+Wants=toshiba-500.service seagate-320 toshiba-320
+[Service]
+Type=simple
+ExecStartPre=/usr/bin/mkdir -p /mnt/mergerfs
+ExecStart=/usr/bin/mergerfs -f \
+  -o cache.files=off,category.create=pfrd,func.getattr=newest,dropcacheonclose=false,allow_other \
+  /mnt/seagate-320:/mnt/toshiba-500:/mnt/toshiba-320 /mnt/mergerfs
+ExecStop=/usr/bin/fusermount -u /mnt/mergerfs
+Restart=on-failure
+KillMode=mixed  # Mixed or control-group, as process can leave dangling FUSE threads
+
+[Install]
+WantedBy=multi-user.target

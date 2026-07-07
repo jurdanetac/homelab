@@ -1,0 +1,17 @@
+[Unit]
+Description=Late Unlock and Mount of Toshiba 320GB HDD
+After=local-fs.target
+Requires=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/sleep 2
+ExecStartPre=/usr/bin/mkdir -p /mnt/toshiba-320
+ExecStart=/sbin/cryptsetup open UUID=60cac177-58f9-4b0a-b4d0-9432c4467119 toshiba-320-mapper --key-file=/etc/cryptsetup-keys.d/toshiba-320.keyfile
+ExecStartPost=/usr/bin/mount /dev/mapper/toshiba-320-mapper /mnt/toshiba-320
+ExecStop=/usr/bin/umount /mnt/toshiba-320-mapper
+ExecStopPost=/sbin/cryptsetup close toshiba-320-mapper
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

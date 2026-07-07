@@ -1,0 +1,17 @@
+[Unit]
+Description=Late Unlock and Mount of Toshiba 500GB HDD
+After=local-fs.target
+Requires=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/sleep 2
+ExecStartPre=/usr/bin/mkdir -p /mnt/toshiba-500
+ExecStart=/sbin/cryptsetup open UUID=bd5f559f-2b6b-4fe7-aa3e-809ec98f2894 toshiba-500-mapper --key-file=/etc/cryptsetup-keys.d/toshiba-500.keyfile
+ExecStartPost=/usr/bin/mount /dev/mapper/toshiba-500-mapper /mnt/toshiba-500
+ExecStop=/usr/bin/umount /mnt/toshiba-500-mapper
+ExecStopPost=/sbin/cryptsetup close toshiba-500-mapper
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

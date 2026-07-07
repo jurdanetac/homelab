@@ -1,0 +1,17 @@
+[Unit]
+Description=Late Unlock and Mount of Seagate 320GB HDD
+After=local-fs.target
+Requires=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/sleep 2
+ExecStartPre=/usr/bin/mkdir -p /mnt/seagate-320
+ExecStart=/sbin/cryptsetup open UUID=91c13a4e-327a-4eb3-9817-1e8220b1c9ef seagate-320-mapper --key-file=/etc/cryptsetup-keys.d/seagate-320.keyfile
+ExecStartPost=/usr/bin/mount /dev/mapper/seagate-320-mapper /mnt/seagate-320
+ExecStop=/usr/bin/umount /mnt/seagate-320-mapper
+ExecStopPost=/sbin/cryptsetup close seagate-320-mapper
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
