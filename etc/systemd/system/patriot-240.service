@@ -7,7 +7,7 @@ Requires=local-fs.target
 Type=oneshot
 ExecStartPre=/usr/bin/sleep 2
 ExecStartPre=/usr/bin/mkdir -p /mnt/patriot-240
-ExecStart=/sbin/cryptsetup open UUID=TODO patriot-240-mapper --key-file=/etc/cryptsetup-keys.d/patriot-240.keyfile
+ExecStart=/sbin/cryptsetup open UUID=9393b113-3d83-433c-bcc1-e10ce63081b4 patriot-240-mapper --key-file=/etc/cryptsetup-keys.d/patriot-240.keyfile
 ExecStartPost=/usr/bin/mount /dev/mapper/patriot-240-mapper /mnt/patriot-240
 ExecStop=/usr/bin/umount /mnt/patriot-240-mapper
 ExecStopPost=/sbin/cryptsetup close patriot-240-mapper
