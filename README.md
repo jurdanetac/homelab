@@ -29,3 +29,8 @@ sde                            8:64   0 465.8G  0 disk
 └─toshiba-500-mapper         252:8    0 465.7G  0 crypt /mnt/toshiba-500
 sr0                           11:0    1  1024M  0 rom
 ```
+
+## TODO
+- Add rationale to README
+- Add Proxmox section to README
+- Learn Ansible and add setup for the server
