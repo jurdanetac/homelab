@@ -30,15 +30,25 @@ sde                            8:64   0 465.8G  0 disk
 sr0                           11:0    1  1024M  0 rom
 ```
 
-## fstab entries for SMB mounting
+## fstab entries for SMB mounting of hard disks
+Note that we need to create the respective users and add them to the media group.
+```
+ubuntu@ubuntu:~$ sudo adduser *arr
+ubuntu@ubuntu:~$ sudo addgroup media
+ubuntu@ubuntu:~$ sudo usermod -aG media *arr
+ubuntu@ubuntu:~$ getent group media
+media:x:1001:sonarr,radarr,bazarr,lidarr
+```
+
+Also, we need to change the virtual permissions on SMB mounts so we can read/write.
 ```
 # SHARED
 # mergerfs  patriot-240  seagate-320  toshiba-320  toshiba-500
-//192.168.0.49/mnt/mergerfs /media/mergerfs cifs guest,uid=1000,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
-//192.168.0.49/mnt/patriot-240 /media/patriot-240 cifs guest,uid=1000,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
-//192.168.0.49/mnt/seagate-320 /media/seagate-320 cifs guest,uid=1000,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
-//192.168.0.49/mnt/toshiba-320 /media/toshiba-320 cifs guest,uid=1000,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
-//192.168.0.49/mnt/toshiba-500 /media/toshiba-500 cifs guest,uid=1000,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
+//192.168.0.49/mnt/mergerfs /media/mergerfs cifs guest,uid=1000,gid=1001,dir_mode=0775,file_mode=0664,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
+//192.168.0.49/mnt/patriot-240 /media/patriot-240 cifs guest,uid=1000,gid=1001,dir_mode=0775,file_mode=0664,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
+//192.168.0.49/mnt/seagate-320 /media/seagate-320 cifs guest,uid=1000,gid=1001,dir_mode=0775,file_mode=0664,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
+//192.168.0.49/mnt/toshiba-320 /media/toshiba-320 cifs guest,uid=1000,gid=1001,dir_mode=0775,file_mode=0664,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
+//192.168.0.49/mnt/toshiba-500 /media/toshiba-500 cifs guest,uid=1000,gid=1001,dir_mode=0775,file_mode=0664,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
 ```
 
 ## TODO
