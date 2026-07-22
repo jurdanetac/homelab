@@ -1,5 +1,6 @@
 all:
   hosts:
       homelab:
+        # group_vars/all/vault.yml
         ansible_host: "{{ vault_proxmox_ip }}"
         ansible_user: "{{ vault_proxmox_user }}"
