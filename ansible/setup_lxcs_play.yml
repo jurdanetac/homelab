@@ -1,0 +1,34 @@
+- name: Setup LXCs Play
+  hosts: homelab
+
+  tasks:
+    - name: Create Homepage Container
+      community.proxmox.proxmox:
+        # auth
+        api_host: "{{ ansible_host }}"
+        api_user: "{{ vault_proxmox_user }}@pam"
+        api_password: "{{ vault_proxmox_password }}"
+        
+        # info
+        vmid: 105
+        node: "homelab"
+
+        # specs
+        onboot: false
+        password: "homepage"
+        hostname: "homepage"
+        ostemplate: "local:vztmpl/debian-13-standard_13.6-1_amd64.tar.zst"
+        cmode: "shell"
+        cores: 2
+        disk: "local-lvm:15"
+        memory: 2048
+        swap: 2048
+        netif:
+          net0: "name=eth0,gw=192.168.0.1,ip=192.168.0.109/24,bridge=vmbr0"
+
+        # tweaks
+        state: "present"
+        validate_certs: false
+
+      # run on this workstation
+      delegate_to: localhost
