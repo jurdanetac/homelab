@@ -1,5 +1,5 @@
 all:
   hosts:
-      proxmox:
+      homelab:
         ansible_host: "{{ vault_proxmox_ip }}"
         ansible_user: "{{ vault_proxmox_user }}"
