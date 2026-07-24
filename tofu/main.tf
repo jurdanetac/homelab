@@ -7,10 +7,11 @@ terraform {
   }
 }
 
+
 variable "endpoint" { type = string }
 variable "username" { type = string }
-variable "password" { 
-  type = string
+variable "password" {
+  type      = string
   sensitive = true
 }
 
@@ -23,8 +24,8 @@ provider "proxmox" {
 
 variable "lxcs" {
   type = map(object({
-    vm_id     = number
-    hostname  = string
+    vm_id         = number
+    hostname      = string
     start_on_boot = optional(bool, false)
   }))
 }
@@ -32,8 +33,8 @@ variable "lxcs" {
 resource "proxmox_virtual_environment_container" "debian_containers" {
   for_each = var.lxcs
 
-  node_name = "homelab"
-  vm_id     = each.value.vm_id
+  node_name   = "homelab"
+  vm_id       = each.value.vm_id
   description = "Managed by Terraform"
 
   # These settings apply to ALL containers automatically
@@ -45,11 +46,12 @@ resource "proxmox_virtual_environment_container" "debian_containers" {
 
   initialization {
     hostname = each.value.hostname
+
     ip_config {
-      ipv4 { 
+      ipv4 {
         address = "192.168.0.${each.value.vm_id}/24"
         gateway = "192.168.0.1"
-        }
+      }
     }
   }
 
@@ -73,5 +75,6 @@ resource "proxmox_virtual_environment_container" "debian_containers" {
 
   operating_system {
     template_file_id = "local:vztmpl/debian-13-standard_13.6-1_amd64.tar.zst"
+    type             = "debian"
   }
 }
