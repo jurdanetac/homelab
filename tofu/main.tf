@@ -8,24 +8,30 @@ terraform {
 }
 
 
-variable "endpoint" { type = string }
-variable "username" { type = string }
-variable "password" {
+variable "ssh_key" {
   type      = string
   sensitive = true
 }
+variable "proxmox_endpoint" { type = string }
+variable "proxmox_username" { type = string }
+variable "proxmox_password" {
+  type      = string
+  sensitive = true
+}
+variable "gateway_ip" { type = string }
 
 provider "proxmox" {
   insecure = true
-  endpoint = var.endpoint
-  username = var.username
-  password = var.password
+  endpoint = var.proxmox_endpoint
+  username = var.proxmox_username
+  password = var.proxmox_password
 }
 
 variable "lxcs" {
   type = map(object({
     vm_id         = number
     hostname      = string
+    ip            = string
     start_on_boot = optional(bool, false)
   }))
 }
@@ -36,6 +42,7 @@ resource "proxmox_virtual_environment_container" "debian_containers" {
   node_name   = "homelab"
   vm_id       = each.value.vm_id
   description = "Managed by Terraform"
+  tags        = ["terraform"]
 
   # These settings apply to ALL containers automatically
   unprivileged = true
@@ -49,9 +56,13 @@ resource "proxmox_virtual_environment_container" "debian_containers" {
 
     ip_config {
       ipv4 {
-        address = "192.168.0.${each.value.vm_id}/24"
-        gateway = "192.168.0.1"
+        address = each.value.ip
+        gateway = var.gateway_ip
       }
+    }
+
+    user_account {
+      keys = [var.ssh_key]
     }
   }
 

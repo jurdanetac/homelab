@@ -1,0 +1,71 @@
+---
+- name: Set up LXCs
+  hosts: proxmox
+  gather_facts: false
+
+  vars:
+    user: syncthing
+
+  tasks:
+    - name: Wait for container network to wake up completely
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host }}"
+        port: 22
+        state: started
+        delay: 3  # First check delay
+        timeout: 30  # Keep retrying for up to 30 seconds before giving up
+      delegate_to: localhost  # Run this check locally
+
+    - name: Update repositories cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install syncthing
+      ansible.builtin.apt:
+        name: syncthing
+
+    - name: Install bus package
+      ansible.builtin.apt:
+        name: dbus-user-session
+
+    - name: Create syncthing user
+      ansible.builtin.user:
+        name: "{{ user }}"
+
+    - name: Enable systemd lingering for the syncthing user
+      ansible.builtin.command: 
+        cmd: loginctl enable-linger {{ user }}
+        creates: /var/lib/systemd/linger/{{ user }} # Skip if this folder/file already exists
+
+    - name: Download systemd service
+      ansible.builtin.get_url:
+        url: "https://raw.githubusercontent.com/syncthing/syncthing/refs/heads/main/etc/linux-systemd/system/syncthing%40.service"
+        dest: /etc/systemd/system/syncthing@.service
+
+    - name: Reload systemd daemon
+      ansible.builtin.command: 
+        cmd: systemctl daemon-reload
+
+    - name: Start service
+      ansible.builtin.systemd_service:
+        name: syncthing@{{ user }}
+        state: started
+
+    - name: Allow external access to Syncthing Web GUI
+      ansible.builtin.replace:
+        path: /home/syncthing/.local/state/{{ user }}/config.xml
+        regexp: '<address>127.0.0.1:8384</address>'
+        replace: '<address>0.0.0.0:8080</address>'
+      register: gui_config_updated
+
+    - name: Restart Syncthing to apply GUI changes
+      ansible.builtin.systemd:
+        name: syncthing@{{ user }}
+        state: restarted
+      when: gui_config_updated.changed
+
+    - name: Enable service
+      ansible.builtin.systemd_service:
+        name: syncthing@{{ user }}
+        enabled: true
+        scope: system
