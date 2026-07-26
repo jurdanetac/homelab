@@ -7,10 +7,10 @@ terraform {
   }
 }
 
-
-variable "ssh_key" {
+variable "ssh_key_path" {
   type      = string
   sensitive = true
+  default   = "~/.ssh/id_ed25519.pub"
 }
 variable "proxmox_endpoint" { type = string }
 variable "proxmox_username" { type = string }
@@ -33,10 +33,13 @@ variable "lxcs" {
     hostname      = string
     ip            = string
     start_on_boot = optional(bool, false)
+    cpu           = number
+    memory        = number
+    disk          = number
   }))
 }
 
-resource "proxmox_virtual_environment_container" "debian_containers" {
+resource "proxmox_virtual_environment_container" "containers" {
   for_each = var.lxcs
 
   node_name   = "homelab"
@@ -44,7 +47,6 @@ resource "proxmox_virtual_environment_container" "debian_containers" {
   description = "Managed by Terraform"
   tags        = ["terraform"]
 
-  # These settings apply to ALL containers automatically
   unprivileged = true
   features {
     nesting = true
@@ -62,30 +64,31 @@ resource "proxmox_virtual_environment_container" "debian_containers" {
     }
 
     user_account {
-      keys = [var.ssh_key]
+      keys = [file(pathexpand(var.ssh_key_path))]
     }
   }
 
   network_interface {
-    name = "veth0"
+    name   = "veth0"
+    bridge = "vmbr0"
   }
 
   cpu {
-    cores = 2
+    cores = each.value.cpu
   }
 
   memory {
-    dedicated = 2048
-    swap      = 2048
+    dedicated = each.value.memory
+    swap      = each.value.memory
   }
 
   disk {
     datastore_id = "local-lvm"
-    size         = 6
+    size         = each.value.disk
   }
 
   operating_system {
-    template_file_id = "local:vztmpl/debian-13-standard_13.6-1_amd64.tar.zst"
-    type             = "debian"
+    template_file_id = "local:vztmpl/alpine-3.24-default_20260714_amd64.tar.xz"
+    type             = "alpine"
   }
 }
