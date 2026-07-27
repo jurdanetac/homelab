@@ -2,7 +2,3 @@
 ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 ansible_user: root
 ansible_ssh_private_key_file: "~/.ssh/id_ed25519"
-
-# Link cleartext variables to the encrypted secrets from the vault
-# proxmox_user: "{{ vault_proxmox_user }}"
-# proxmox_endpoint: "{{ vault_proxmox_endpoint }}"

@@ -1,0 +1,22 @@
+---
+- name: Set up Syncthing LXC
+  hosts: syncthing
+  gather_facts: false
+
+  vars:
+    user: syncthing
+
+  tasks:
+    - name: Allow remote GUI connections on port 8384
+      ansible.builtin.copy:
+        dest: "/etc/conf.d/syncthing"
+        content: |
+          SYNCTHING_ARGS='--no-browser --no-restart --gui-address=0.0.0.0:8384'
+
+    - name: Start service
+      ansible.builtin.command: 
+        cmd: rc-service syncthing start
+
+    - name: Enable service
+      ansible.builtin.command: 
+        cmd: rc-update add syncthing default 
