@@ -1,0 +1,7 @@
+---
+# Master Pipeline
+- name: Run LXCs setup
+  ansible.builtin.import_playbook: bootstrap.yaml
+
+- name: Run Syncthing LXC setup
+  ansible.builtin.import_playbook: syncthing.yaml

@@ -3,10 +3,12 @@
   hosts: syncthing
   gather_facts: false
 
-  vars:
-    user: syncthing
-
   tasks:
+    - name: Install syncthing
+      community.general.apk:
+        name: syncthing
+        state: present
+    
     - name: Allow remote GUI connections on port 8384
       ansible.builtin.copy:
         dest: "/etc/conf.d/syncthing"
