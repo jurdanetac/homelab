@@ -1,13 +1,14 @@
----
 all:
   children:
     proxmox:
       hosts:
         proxmox_host:
           ansible_host: 192.168.0.99
-
     lxcs:
       hosts:
+        homepage:
+          ansible_host: 192.168.0.100
+          vm_id: 100
         syncthing:
           ansible_host: 192.168.0.101
           vm_id: 101

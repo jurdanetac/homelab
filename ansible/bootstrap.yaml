@@ -1,30 +1,39 @@
----
 - name: Prepare Alpine containers for Ansible access
   hosts: lxcs
   gather_facts: false
-
+  vars:
+    user: "{{ inventory_hostname }}"
   tasks:
     - name: Update repositories cache
       ansible.builtin.command:
         cmd: "pct exec {{ vm_id }} -- apk update"
       delegate_to: proxmox_host
-      
     - name: Install OpenSSH Package
       ansible.builtin.command:
         cmd: "pct exec {{ vm_id }} -- apk add openssh"
       delegate_to: proxmox_host
-
     - name: Install Python 3
       ansible.builtin.command:
         cmd: "pct exec {{ vm_id }} -- apk add python3"
       delegate_to: proxmox_host
-
     - name: Enable SSH service
       ansible.builtin.command:
         cmd: "pct exec {{ vm_id }} -- rc-update add sshd default"
       delegate_to: proxmox_host
-
     - name: Start SSH service
       ansible.builtin.command:
         cmd: "pct exec {{ vm_id }} -- rc-service sshd start"
       delegate_to: proxmox_host
+    - name: Create user with a home directory
+      ansible.builtin.user:
+        name: "{{ user }}"
+        create_home: yes
+    - name: Create group for user
+      ansible.builtin.group:
+        name: "{{ user }}"
+        state: present
+    - name: Add user to group
+      ansible.builtin.user:
+        name: "{{ user }}"
+        groups: "{{ user }}"
+        append: yes

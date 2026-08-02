@@ -1,0 +1,90 @@
+- name: Set up Homepage LXC
+  hosts: homepage
+  gather_facts: false
+  vars:
+    app_directory: /var/www/homepage
+    user: "{{ inventory_hostname }}"
+  tasks:
+    - name: Install git
+      community.general.apk:
+        name: git
+        state: present
+    - name: Install node
+      community.general.apk:
+        name: nodejs
+        state: present
+    - name: Install pnpm
+      community.general.apk:
+        name: pnpm
+        state: present
+    - name: Create apps directory
+      ansible.builtin.file:
+        path: /var/www/
+        state: directory
+        mode: '0755'
+    - name: Clone app repository
+      ansible.builtin.git:
+        repo: 'https://github.com/gethomepage/homepage.git'
+        dest: "{{ app_directory }}"
+    - name: Create config directory
+      ansible.builtin.file:
+        path: "{{ app_directory }}/config"
+        state: directory
+    - name: Change file ownership, group and permissions for app tree
+      ansible.builtin.file:
+        path: "{{ app_directory }}"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: '0750'
+        recurse: yes
+    # pnpm clean --lockfile
+    - name: Remove lockfile
+      ansible.builtin.command: pnpm clean --lockfile
+      args:
+        chdir: "{{ app_directory }}"
+        removes: pnpm-lock.yaml
+    # pnpm install
+    - name: Install packages based on package.json
+      community.general.pnpm:
+        path: "{{ app_directory }}"
+      ignore_errors: yes
+    # pnpm approve-builds --all
+    - name: Allow dependencies to run scripts
+      ansible.builtin.command: pnpm approve-builds --all
+      args:
+        chdir: "{{ app_directory }}"
+    # pnpm build
+    - name: Build next app
+      ansible.builtin.command: pnpm build
+      args:
+        chdir: "{{ app_directory }}"
+        creates: .next
+    - name: Create the OpenRC init script
+      ansible.builtin.copy:
+        dest: /etc/init.d/homepage
+        mode: '0755'
+        owner: root
+        group: root
+        content: |
+          #!/sbin/openrc-run
+
+          name=$RC_SVCNAME
+          supervisor=supervise-daemon
+          directory="{{ app_directory }}"
+          command=/usr/bin/pnpm
+          command_args="start"
+          command_user="{{ user }}:{{ user }}"
+          output_logger="logger -t '${RC_SVCNAME}' -p daemon.info"
+          error_logger="logger -t '${RC_SVCNAME}' -p daemon.error"
+
+          export HOMEPAGE_ALLOWED_HOSTS="*"
+
+          depend() {
+                  use logger dns net
+                  after firewall
+          }
+    - name: Enable and start the service
+      ansible.builtin.service:
+        name: homepage
+        state: started
+        enabled: yes
