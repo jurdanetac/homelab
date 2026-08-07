@@ -1,5 +1,12 @@
 # Homelab
 
+## TODO
+- Move `fstab-entries-for-SMB-mounting-of-hard-disks` entries for SMB mounting of hard disks to Ansible
+- Add rationale to README
+- Add Proxmox section to README
+- Implement a "pre-processing" stage for the pipeline to refactor constants such as IP addresses in a file and plug them in Terraform/Ansible
+- ~~Learn Ansible and add setup for the server~~
+
 ## Disk layout
 ```
 NAME                         MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINTS
@@ -51,7 +58,3 @@ Also, we need to change the virtual permissions on SMB mounts so we can read/wri
 //192.168.0.49/mnt/toshiba-500 /media/toshiba-500 cifs guest,uid=1000,gid=1001,dir_mode=0775,file_mode=0664,iocharset=utf8,_netdev,nofail,x-systemd.automount 0 0
 ```
 
-## TODO
-- Add rationale to README
-- Add Proxmox section to README
-- Learn Ansible and add setup for the server
