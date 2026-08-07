@@ -15,3 +15,6 @@ all:
         jellyfin:
           ansible_host: 192.168.0.102
           vm_id: 102
+        transmission:
+          ansible_host: 192.168.0.103
+          vm_id: 103

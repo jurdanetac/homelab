@@ -1,0 +1,37 @@
+- name: Set up Transmission LXC
+  hosts: transmission
+  gather_facts: false
+  vars:
+    settings_path: "/var/lib/transmission/config/settings.json"
+  tasks:
+    - name: Install daemon
+      community.general.apk:
+        name: transmission-daemon
+        state: present
+    - name: Ensure initial configuration file exists
+      ansible.builtin.shell: |
+        if [ ! -f "{{ settings_path }}" ]; then
+          rc-service transmission-daemon start
+          rc-service transmission-daemon stop
+        fi
+      args:
+        creates: "{{ settings_path }}"
+    - name: Ensure daemon is stopped before modifying config
+      ansible.builtin.service:
+        name: transmission-daemon
+        state: stopped
+    - name: Allow all connections
+      ansible.builtin.replace:
+        path: "{{ settings_path }}"
+        regexp: '"rpc-whitelist-enabled":\s*(true|false)'
+        replace: '"rpc-whitelist-enabled": false'
+    - name: Prevents 403 Forbidden
+      ansible.builtin.replace:
+        path: "{{ settings_path }}"
+        regexp: '"rpc-host-whitelist-enabled":\s*(true|false)'
+        replace: '"rpc-host-whitelist-enabled": false'
+    - name: Enable and start service
+      ansible.builtin.service:
+        name: transmission-daemon
+        state: started
+        enabled: true
