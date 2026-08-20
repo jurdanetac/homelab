@@ -1,7 +1,0 @@
-# Master Pipeline
-- name: Run LXC bootstrap
-  ansible.builtin.import_playbook: lxc/bootstrap.yaml
-- name: Run Syncthing LXC setup
-  ansible.builtin.import_playbook: lxc/syncthing.yaml
-- name: Run Homepage LXC setup
-  ansible.builtin.import_playbook: lxc/homepage.yaml
