@@ -1,5 +1,62 @@
 # Homelab
 
+## Diagram
+```mermaid
+---
+title: Homelab Architecture & Infrastructure Map
+---
+
+flowchart LR
+    subgraph etc ["/etc/"]
+        subgraph cryptsetup_keys ["cryptsetup-keys.d/"]
+            k_patriot["patriot-240.keyfile"]
+            k_seagate["seagate-320.keyfile"]
+            k_toshiba320["toshiba-320.keyfile"]
+            k_toshiba500["toshiba-500.keyfile"]
+        end
+
+        subgraph systemd_system ["systemd/system/"]
+            s_smb["smb.service"]
+            s_patriot["patriot-240.service"]
+            s_seagate["seagate-320.service"]
+            s_toshiba320["toshiba-320.service"]
+            s_toshiba500["toshiba-500.service"]
+            s_mergerfs["mergerfs.service"]
+        end
+
+        subgraph samba ["samba/"]
+            c_smb["smb.conf"]
+        end
+    end
+
+    subgraph mnt ["/mnt/"]
+        direction LR
+        m_patriot["patriot-240"]
+        m_seagate["seagate-320"]
+        m_toshiba320["toshiba-320"]
+        m_toshiba500["toshiba-500"]
+        m_mergerfs["mergerfs"]
+    end
+
+    k_patriot --> s_patriot
+    k_seagate --> s_seagate
+    k_toshiba320 --> s_toshiba320
+    k_toshiba500 --> s_toshiba500
+
+    c_smb --> s_smb
+
+    s_patriot --> m_patriot
+    s_seagate --> m_seagate
+    s_toshiba320 --> m_toshiba320
+    s_toshiba500 --> m_toshiba500
+
+    s_patriot --> s_mergerfs
+    s_seagate --> s_mergerfs
+    s_toshiba320 --> s_mergerfs
+    s_toshiba500 --> s_mergerfs
+    s_mergerfs --> m_mergerfs
+```
+
 ## TODO
 - Move `fstab-entries-for-SMB-mounting-of-hard-disks` entries for SMB mounting of hard disks to Ansible
 - Add rationale to README
