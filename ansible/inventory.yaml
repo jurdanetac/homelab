@@ -4,17 +4,9 @@ all:
       hosts:
         proxmox_host:
           ansible_host: 192.168.0.99
-    lxcs:
+    vm:
       hosts:
-        homepage:
+        arr:
           ansible_host: 192.168.0.100
+          ansible_user: arr
           vm_id: 100
-        syncthing:
-          ansible_host: 192.168.0.101
-          vm_id: 101
-        jellyfin:
-          ansible_host: 192.168.0.102
-          vm_id: 102
-        transmission:
-          ansible_host: 192.168.0.103
-          vm_id: 103

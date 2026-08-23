@@ -1,0 +1,71 @@
+- name: Configure Arr Debian VM
+  hosts: arr
+  become: true
+  gather_facts: true
+  vars:
+    user: "{{ inventory_hostname }}"
+  tasks:
+    - name: Install packages
+      ansible.builtin.apt:
+        name:
+          - qemu-guest-agent
+          - passwd
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: true
+    - name: Rename default group (GID 1000) to 'media'
+      ansible.builtin.command:
+        cmd: "groupmod -n media {{ user }}"
+      ignore_errors: true
+    - name: Add user to media group and keep sudo
+      ansible.builtin.user:
+        name: "{{ user }}"
+        group: media
+        groups: sudo
+        append: true
+    - name: Ensure /etc/apt/keyrings directory exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+    - name: Download Docker official GPG key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+    - name: Add Docker repository
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/docker.sources
+        mode: '0644'
+        content: |
+          Types: deb
+          URIs: https://download.docker.com/linux/debian
+          Suites: {{ ansible_facts['distribution_release'] }}
+          Components: stable
+          Architectures: {{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else ansible_facts['architecture'] }}
+          Signed-By: /etc/apt/keyrings/docker.asc
+    - name: Install docker packages
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+# - name: Ensure Servarr /data directory tree exists
+#   ansible.builtin.file:
+#     path: "{{ item }}"
+#     state: directory
+#     owner: arr
+#     group: media
+#     mode: '0775'
+#   loop:
+#     - /data/torrents/movies
+#     - /data/torrents/tv
+#     - /data/media/movies
+#     - /data/media/tv
+#     - /opt/appdata
