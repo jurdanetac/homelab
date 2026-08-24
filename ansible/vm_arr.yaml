@@ -15,6 +15,11 @@
           - curl
         state: present
         update_cache: true
+    - name: Enable QEMU guest agent
+      ansible.builtin.systemd_service:
+        name: qemu-guest-agent
+        state: started
+        enabled: true
     - name: Rename default group (GID 1000) to 'media'
       ansible.builtin.command:
         cmd: "groupmod -n {{ media }} {{ user }}"
