@@ -4,6 +4,7 @@ all:
       hosts:
         proxmox_host:
           ansible_host: 192.168.0.99
+          ansible_user: root
     vm:
       hosts:
         arr:

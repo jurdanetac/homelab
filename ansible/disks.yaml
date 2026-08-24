@@ -1,0 +1,63 @@
+- name: Setup disks auto mounting
+  hosts: proxmox_host
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Install disk encryption support
+      ansible.builtin.apt:
+        name: cryptsetup
+        state: present
+        update_cache: true
+    - name: Create services for the disks
+      block:
+        - name: Patriot 240
+          ansible.builtin.copy:
+            src: ../etc/systemd/system/patriot-240.service
+            dest: /etc/systemd/system/patriot-240.service
+            owner: root
+            group: root
+            mode: '0644'
+        - name: Seagate 320
+          ansible.builtin.copy:
+            src: ../etc/systemd/system/seagate-320.service
+            dest: /etc/systemd/system/seagate-320.service
+            owner: root
+            group: root
+            mode: '0644'
+        - name: Toshiba 320
+          ansible.builtin.copy:
+            src: ../etc/systemd/system/toshiba-320.service
+            dest: /etc/systemd/system/toshiba-320.service
+            owner: root
+            group: root
+            mode: '0644'
+        - name: Toshiba 500
+          ansible.builtin.copy:
+            src: ../etc/systemd/system/toshiba-500.service
+            dest: /etc/systemd/system/toshiba-500.service
+            owner: root
+            group: root
+            mode: '0644'
+    - name: Enable services
+      block:
+        - name: Patriot 240
+          ansible.builtin.systemd_service:
+            name: patriot-240.service
+            state: started
+            enabled: true
+            daemon_reload: true
+        - name: Seagate 320
+          ansible.builtin.systemd_service:
+            name: seagate-320.service
+            state: started
+            enabled: true
+        - name: Toshiba 320
+          ansible.builtin.systemd_service:
+            name: toshiba-320.service
+            state: started
+            enabled: true
+        - name: Toshiba 500
+          ansible.builtin.systemd_service:
+            name: toshiba-500.service
+            state: started
+            enabled: true
