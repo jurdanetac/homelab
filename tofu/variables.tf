@@ -15,3 +15,15 @@ variable "vm_arr_ip" {
   type        = string
   description = "Static IP address for the Arr VM in CIDR notation"
 }
+variable "lxc" {
+  type = map(object({
+    vm_id         = number
+    hostname      = string
+    ip            = string
+    start_on_boot = optional(bool, false)
+    cpu           = number
+    memory        = number
+    disk          = number
+  }))
+}
+

@@ -1,18 +1,5 @@
-/*
-variable "lxcs" {
-  type = map(object({
-    vm_id         = number
-    hostname      = string
-    ip            = string
-    start_on_boot = optional(bool, false)
-    cpu           = number
-    memory        = number
-    disk          = number
-  }))
-}
-
 resource "proxmox_virtual_environment_container" "containers" {
-  for_each = var.lxcs
+  for_each = var.lxc
 
   node_name   = "homelab"
   vm_id       = each.value.vm_id
@@ -64,4 +51,3 @@ resource "proxmox_virtual_environment_container" "containers" {
     type             = "alpine"
   }
 }
-*/
