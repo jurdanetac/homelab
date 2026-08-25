@@ -1,11 +1,5 @@
 # LXC Master Playbook
 - name: Run Bootstrap
   ansible.builtin.import_playbook: bootstrap.yaml
-- name: Run Homepage setup
-  ansible.builtin.import_playbook: homepage.yaml
-- name: Run Jellyfin setup
-  ansible.builtin.import_playbook: jellyfin.yaml
-- name: Run Transmission setup
-  ansible.builtin.import_playbook: transmission.yaml
 - name: Run Syncthing setup
   ansible.builtin.import_playbook: syncthing.yaml
