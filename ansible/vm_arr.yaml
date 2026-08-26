@@ -89,6 +89,19 @@
       ansible.builtin.command:
         cmd: docker compose up -d --remove-orphans
         chdir: /opt/servarr
+    - name: Mount disks
+      ansible.builtin.blockinfile:
+        state: present
+        dest: /etc/fstab
+        marker: "### {mark} Mount disks ANSIBLE MANAGED BLOCK"
+        prepend_newline: true
+        insertafter: EOF
+        content: "{{ lookup('file', 'files/disks_fstab') }}"
+    - name: Reload fstab
+      ansible.builtin.systemd_service:
+        name: remote-fs.target
+        daemon_reload: true
+        state: restarted
 
 # - name: Ensure Servarr /data directory tree exists
 #   ansible.builtin.file:
