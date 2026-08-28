@@ -10,7 +10,7 @@
         update_cache: true
     - name: Copy config
       ansible.builtin.copy:
-        src: ../etc/samba/smb.conf
+        src: files/etc/samba/smb.conf
         dest: /etc/samba/smb.conf
         owner: root
         group: root
