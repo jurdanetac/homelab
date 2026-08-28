@@ -85,11 +85,7 @@
         cmd: docker network create servarr_default
         chdir: /opt/servarr
       ignore_errors: true
-    - name: Start Docker Compose stack
-      ansible.builtin.command:
-        cmd: docker compose up -d --remove-orphans
-        chdir: /opt/servarr
-    - name: Mount disks
+    - name: Add disks to fstab
       ansible.builtin.blockinfile:
         state: present
         dest: /etc/fstab
@@ -102,3 +98,16 @@
         name: remote-fs.target
         daemon_reload: true
         state: restarted
+    - name: Start Docker Compose stack
+      ansible.builtin.command:
+        cmd: docker compose up -d --remove-orphans
+        chdir: /opt/servarr
+    - name: Wait 5 seconds for container initialization
+      ansible.builtin.pause:
+        seconds: 5
+    - name: Fetch qbittorrent dummy password
+      command: docker logs --tail 5 qbittorrent
+      register: qb
+    - name: Display last 5 log lines
+      debug:
+        msg: "{{ qb.stdout }}"
