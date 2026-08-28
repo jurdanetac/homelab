@@ -75,7 +75,7 @@
         mode: '0755'
     - name: Copy compose file
       ansible.builtin.copy:
-        src: files/docker-compose-arr.yaml
+        src: files/docker-compose.yaml
         dest: /opt/servarr/docker-compose.yml
         owner: "{{ user }}"
         group: "{{ media }}"
@@ -96,23 +96,9 @@
         marker: "### {mark} Mount disks ANSIBLE MANAGED BLOCK"
         prepend_newline: true
         insertafter: EOF
-        content: "{{ lookup('file', 'files/disks_fstab') }}"
+        content: "{{ lookup('file', 'files/fstab.part') }}"
     - name: Reload fstab
       ansible.builtin.systemd_service:
         name: remote-fs.target
         daemon_reload: true
         state: restarted
-
-# - name: Ensure Servarr /data directory tree exists
-#   ansible.builtin.file:
-#     path: "{{ item }}"
-#     state: directory
-#     owner: arr
-#     group: media
-#     mode: '0775'
-#   loop:
-#     - /data/torrents/movies
-#     - /data/torrents/tv
-#     - /data/media/movies
-#     - /data/media/tv
-#     - /opt/appdata
