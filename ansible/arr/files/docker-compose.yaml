@@ -7,45 +7,6 @@ x-common-keys: &common-keys
     PGID: 1000
     TZ: America/Caracas
 services:
-  radarr:
-    !!merge <<: *common-keys
-    container_name: radarr
-    image: ghcr.io/hotio/radarr:latest
-    ports:
-      - 7878:7878
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/radarr:/config
-      - /data:/data
-  sonarr:
-    !!merge <<: *common-keys
-    container_name: sonarr
-    image: ghcr.io/hotio/sonarr:latest
-    ports:
-      - 8989:8989
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/sonarr:/config
-      - /data:/data
-  lidarr:
-    !!merge <<: *common-keys
-    container_name: lidarr
-    image: ghcr.io/hotio/lidarr:latest
-    ports:
-      - 8686:8686
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/lidarr:/config
-      - /data:/data
-  prowlarr:
-    !!merge <<: *common-keys
-    container_name: prowlarr
-    image: ghcr.io/hotio/prowlarr:latest
-    ports:
-      - 9696:9696
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /docker/appdata/prowlarr:/config
   qbittorrent:
     !!merge <<: *common-keys
     container_name: qbittorrent
@@ -61,6 +22,10 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/qbittorrent:/config
       - /data:/data
+      - /mnt/patriot-240:/mnt/patriot-240
+      - /mnt/seagate-320:/mnt/seagate-320
+      - /mnt/patriot-toshiba-320:/mnt/toshiba-320
+      - /mnt/patriot-toshiba-500:/mnt/toshiba-500
   jellyfin:
     !!merge <<: *common-keys
     container_name: jellyfin
@@ -71,6 +36,54 @@ services:
       - /data/media:/data/media:ro #read-only
     ports:
       - 8096:8096
+  radarr:
+    !!merge <<: *common-keys
+    container_name: radarr
+    image: ghcr.io/hotio/radarr:latest
+    ports:
+      - 7878:7878
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker/appdata/radarr:/config
+      - /mnt/patriot-240:/mnt/patriot-240
+      - /mnt/seagate-320:/mnt/seagate-320
+      - /mnt/patriot-toshiba-320:/mnt/toshiba-320
+      - /mnt/patriot-toshiba-500:/mnt/toshiba-500
+  sonarr:
+    !!merge <<: *common-keys
+    container_name: sonarr
+    image: ghcr.io/hotio/sonarr:latest
+    ports:
+      - 8989:8989
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker/appdata/sonarr:/config
+      - /mnt/patriot-240:/mnt/patriot-240
+      - /mnt/seagate-320:/mnt/seagate-320
+      - /mnt/patriot-toshiba-320:/mnt/toshiba-320
+      - /mnt/patriot-toshiba-500:/mnt/toshiba-500
+  lidarr:
+    !!merge <<: *common-keys
+    container_name: lidarr
+    image: ghcr.io/hotio/lidarr:latest
+    ports:
+      - 8686:8686
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker/appdata/lidarr:/config
+      - /mnt/patriot-240:/mnt/patriot-240
+      - /mnt/seagate-320:/mnt/seagate-320
+      - /mnt/patriot-toshiba-320:/mnt/toshiba-320
+      - /mnt/patriot-toshiba-500:/mnt/toshiba-500
+  prowlarr:
+    !!merge <<: *common-keys
+    container_name: prowlarr
+    image: ghcr.io/hotio/prowlarr:latest
+    ports:
+      - 9696:9696
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker/appdata/prowlarr:/config
 networks:
   default:
     name: arr_network

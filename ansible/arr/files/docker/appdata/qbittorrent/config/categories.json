@@ -7,11 +7,11 @@
         "seeding_time_limit": -2,
         "share_limit_action": "Default"
     },
-    "movies": {
+    "films": {
         "download_path": null,
         "inactive_seeding_time_limit": -2,
         "ratio_limit": -2,
-        "save_path": "movies",
+        "save_path": "films",
         "seeding_time_limit": -2,
         "share_limit_action": "Default"
     },
