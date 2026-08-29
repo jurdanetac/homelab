@@ -37,6 +37,15 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /docker/appdata/lidarr:/config
       - /data:/data
+  prowlarr:
+    !!merge <<: *common-keys
+    container_name: prowlarr
+    image: ghcr.io/hotio/prowlarr:latest
+    ports:
+      - 9696:9696
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker/appdata/prowlarr:/config
   qbittorrent:
     !!merge <<: *common-keys
     container_name: qbittorrent
