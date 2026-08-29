@@ -1,0 +1,34 @@
+{
+    "anime": {
+        "download_path": null,
+        "inactive_seeding_time_limit": -2,
+        "ratio_limit": -2,
+        "save_path": "anime",
+        "seeding_time_limit": -2,
+        "share_limit_action": "Default"
+    },
+    "movies": {
+        "download_path": null,
+        "inactive_seeding_time_limit": -2,
+        "ratio_limit": -2,
+        "save_path": "movies",
+        "seeding_time_limit": -2,
+        "share_limit_action": "Default"
+    },
+    "music": {
+        "download_path": null,
+        "inactive_seeding_time_limit": -2,
+        "ratio_limit": -2,
+        "save_path": "music",
+        "seeding_time_limit": -2,
+        "share_limit_action": "Default"
+    },
+    "tv": {
+        "download_path": null,
+        "inactive_seeding_time_limit": -2,
+        "ratio_limit": -2,
+        "save_path": "tv",
+        "seeding_time_limit": -2,
+        "share_limit_action": "Default"
+    }
+}
