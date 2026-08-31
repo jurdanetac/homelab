@@ -1,0 +1,33 @@
+auto lo
+iface lo inet loopback
+
+# 1. Wireless USB Dongle
+auto wlan0
+iface wlan0 inet static
+    metric 100
+    address 192.168.0.100/24
+    gateway 192.168.0.1
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+# 2. Wired Ethernet (Fallback)
+allow-hotplug nic0
+iface nic0 inet dhcp
+    metric 200
+
+# Virtual Bridge for VMs (Internal Router)
+auto vmbr0
+iface vmbr0 inet static
+    address 10.10.10.1/24
+	bridge-ports none
+	bridge-stp off
+	bridge-fd 0
+    post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+
+    # Add NAT masquerade rules whjen bridge goes UP
+    post-up iptables -t nat -A POSTROUTING -s '10.10.10.0/24' -o wlan0 -j MASQUERADE
+    post-up iptables -t nat -A POSTROUTING -s '10.10.10.0/24' -o nic0 -j MASQUERADE
+
+    # Remove NAT masquerade rules whjen bridge goes DOWN
+    post-down iptables -t nat -D POSTROUTING -s '10.10.10.0/24' -o wlan0 -j MASQUERADE || true
+    post-down iptables -t nat -D POSTROUTING -s '10.10.10.0/24' -o nic0 -j MASQUERADE || true
+source /etc/network/interfaces.d/*
