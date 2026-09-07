@@ -1,0 +1,17 @@
+[Unit]
+Description=Late Unlock and Mount of SanDisk 500GB SSD
+After=local-fs.target
+Requires=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/sleep 2
+ExecStartPre=/usr/bin/mkdir -p /mnt/sandisk-500
+ExecStart=/bin/sh -c 'if ! /sbin/cryptsetup status sandisk-500-mapper >/dev/null 2>&1; then /sbin/cryptsetup open UUID=2b1a7cc4-0d34-4f03-82ef-165e552b4d6e sandisk-500-mapper --key-file=/etc/cryptsetup-keys.d/sandisk-500.keyfile; fi'
+ExecStartPost=/bin/sh -c 'mountpoint -q /mnt/sandisk-500 || /usr/bin/mount /dev/mapper/sandisk-500-mapper /mnt/sandisk-500'
+ExecStop=/usr/bin/umount /mnt/sandisk-500
+ExecStopPost=/sbin/cryptsetup close sandisk-500-mapper
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
