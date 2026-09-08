@@ -1,11 +1,12 @@
 # Android-Tethered Homelab Network Bridge
 
 ## Network Topology Summary
-* Home Wi-Fi Subnet: 192.168.0.0/24 
+* Home Wi-Fi Subnet: 192.168.1.0/24
 * USB Tether Subnet: 192.168.224.0/24 
 
 ## Key Device IP Addresses & Variables
-* Android Phone (Wi-Fi / Gateway): 192.168.0.12 (Verify dynamically in phone settings) 
+* Default Gateway IP Address: 192.168.1.1
+* Android Phone (Wi-Fi / Gateway): 192.168.1.2 
 * Android Phone (USB Gateway): 192.168.224.126 
 * Linux Homelab (USB Interface): 192.168.224.90 
 
@@ -44,7 +45,7 @@ Instead of configuring individual client devices (like Mac or iPhone), add a sta
 #### Router Admin Panel Settings:
 * Destination Network: 192.168.224.0 
 * Subnet Mask: 255.255.255.0 
-* Gateway / Next Hop: 192.168.0.12 (Phone's current Wi-Fi IP)
+* Gateway / Next Hop: 192.168.0.2 (Phone's current Wi-Fi IP)
 
 ## Troubleshooting & Testing Commands
 ```
