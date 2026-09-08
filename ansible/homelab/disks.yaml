@@ -1,10 +1,10 @@
 - name: Setup disks auto mounting
-  hosts: proxmox_host
+  hosts: homelab
   become: true
   gather_facts: false
   tasks:
     - name: Install disk encryption support and mergerfs for FUSE union filesystem
-      ansible.builtin.apt:
+      ansible.builtin.dnf:
         name:
           - cryptsetup
           - mergerfs
@@ -12,10 +12,10 @@
         update_cache: true
     - name: Create services for the disks
       block:
-        - name: Patriot 240
+        - name: SanDisk 500
           ansible.builtin.copy:
-            src: files/etc/systemd/system/patriot-240.service
-            dest: /etc/systemd/system/patriot-240.service
+            src: files/etc/systemd/system/sandisk-500.service
+            dest: /etc/systemd/system/sandisk-500.service
             owner: root
             group: root
             mode: '0644'
