@@ -65,8 +65,3 @@ flowchart LR
     s_toshiba500 --> s_mergerfs
     s_mergerfs --> m_mergerfs
 ```
-
-## TODO
-- Add rationale to README
-- Use ssot
-- ~~Learn Ansible and add setup for the server~~
