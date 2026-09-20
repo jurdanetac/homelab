@@ -49,9 +49,9 @@
             mode: '0644'
     - name: Enable services
       block:
-        - name: Patriot 240
+        - name: Sandisk 500
           ansible.builtin.systemd_service:
-            name: patriot-240.service
+            name: sandisk-500.service
             state: restarted
             enabled: true
             daemon_reload: true

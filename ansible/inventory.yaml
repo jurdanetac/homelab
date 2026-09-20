@@ -3,5 +3,5 @@ all:
     proxmox:
       hosts:
         homelab:
-          ansible_host: 192.168.224.90
+          ansible_host: 192.168.X.X
           ansible_user: root
