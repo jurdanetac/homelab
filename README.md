@@ -1,7 +1,7 @@
 # Homelab
 
 ## Software
-<p align="center"><img src="images/logo.png" /></p>
+<p align="center"><img src="logo.png" /></p>
 
 ## Hardware
 - Processors: 4 x Intel® Core™* 15-6600 CPU @ 3.30GHz
