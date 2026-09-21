@@ -7,11 +7,5 @@ services:
     volumes:
       - /opt/jellyfin/config:/config
       - /opt/jellyfin/cache:/cache
-      # - type: bind
-      #   source: /path/to/media
-      #   target: /media
-      # - type: bind
-      #   source: /path/to/media2
-      #   target: /media2
-      #   read_only: true
+      - /mnt/mergerfs/data/media:/media:ro
     restart: 'unless-stopped'
