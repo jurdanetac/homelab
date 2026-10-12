@@ -1,0 +1,12 @@
+services:
+  radarr:
+    image: ghcr.io/hotio/radarr:latest
+    container_name: radarr
+    network_mode: "host"
+    volumes:
+      - /opt/radarr:/config
+      - /mnt/toshiba-500:/toshiba-500
+      - /mnt/toshiba-320:/toshiba-320
+      - /mnt/sandisk-500:/sandisk-500
+      - /mnt/seagate-320:/toshiba-320
+    restart: 'unless-stopped'
