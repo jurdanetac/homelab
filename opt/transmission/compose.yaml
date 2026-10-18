@@ -1,0 +1,24 @@
+---
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Caracas
+      - UMASK=002
+      - WHITELIST=*
+      - HOST_WHITELIST=*
+    volumes:
+      - ./data:/config
+      - /mnt/toshiba-500:/toshiba-500
+      - /mnt/toshiba-320:/toshiba-320
+      - /mnt/sandisk-500:/sandisk-500
+      - /mnt/seagate-320:/seagate-320
+      - /mnt/mergerfs:/mergerfs
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
