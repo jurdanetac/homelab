@@ -3,6 +3,8 @@ services:
     image: ghcr.io/hotio/sonarr:latest
     container_name: sonarr
     network_mode: "host"
+    environment:
+      - UMASK=002
     volumes:
       - /opt/sonarr:/config
       - /mnt/toshiba-500:/toshiba-500
