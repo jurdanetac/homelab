@@ -7,5 +7,5 @@ services:
     volumes:
       - /opt/jellyfin/config:/config
       - /opt/jellyfin/cache:/cache
-      - /mnt/mergerfs/data/media:/media:ro
+      - /mnt/mergerfs:/media:ro
     restart: 'unless-stopped'
